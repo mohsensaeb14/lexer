@@ -1,74 +1,51 @@
 import java.io.*;
-import java.util.*;
 
 public class Main {
-    private static List<Character> chars = new ArrayList<>();
+    public static String filelocation = "C:\\Users\\Nikita\\Dropbox\\git\\lexer\\files\\input.txt";
+    public static BufferedReader reader = null;
+    public static boolean end = false;  //to check for the end of file
+
+
     public static void main(String[] args) throws IOException {
 
-        String filelocation = "C:\\Users\\Nikita\\Dropbox\\git\\lexer\\files\\input.txt";
-        BufferedWriter INfile = new BufferedWriter(new FileWriter(filelocation));
-        INfile.write("you have made me cry");
-        INfile.write(" goddammit!");
-        INfile.close();
+        reader = new BufferedReader(new FileReader(new File(filelocation)));
 
-            BufferedReader reader = null;
-            try {
-                reader = new BufferedReader(new FileReader(new File(filelocation)));
-                int c;
-                while ((c = reader.read()) != -1) {
-                    chars.add((char) c);
-                }
-
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            System.out.println(chars.toString());
-            System.out.println(chars);
-            System.out.println(chars.get(0));
-
-        //recognize id
-
-
-
+        while (!end) {
+            System.out.print(NextSym());
         }
 
+        reader.close();
     }
 
 
-class Lexer { /*принимает входной файл и формирует из него файлы
-              ничего не записывает через
-            printtoken закидывает токен в выходной поток */
-    String str;
-    public Lexer(String str) {
-        this.str = str;
+
+    static char NextSym() throws IOException {
+        int c= reader.read();  //int will become -1 when it'll reach the end of file
+        char ch = (char)c;
+
+//        if (ch == '\n')
+//        if (ch == '\t')
+
+        if (c == -1){ //check for the EOF and mark it
+            end = true;
+            ch = '@';
+        }
+
+        return ch;
     }
-
-
-/*
-//функция, которая дает следующий символ
-//getchar
-отлавливать ошибки с помощью try-cach??
-*/
-
 
 }
 
 
+class Lexer {
+    String str;
+    public Lexer(String str) {this.str = str;}
 
+    void getToken()//will return the Token
+    {
+        /*
+        /a lot of if-else things/
+         */
+    }
 
-
-//    BufferedReader OUTfile = new BufferedReader (new FileReader("C:\\Users\\Nikita\\Dropbox\\git\\lexer\\files\\output.txt"));
-//System.out.println(OUTfile.readLine());
-//        OUTfile.close();
-
-
+}
