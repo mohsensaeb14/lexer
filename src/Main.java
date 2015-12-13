@@ -1,45 +1,57 @@
 import java.io.*;
 
 public class Main {
-    public static String filelocation = "C:\\Users\\Nikita\\Dropbox\\git\\lexer\\files\\input.txt";
-    public static BufferedReader reader = null;
-    public static boolean end = false;  //to check for the end of file
-
 
     public static void main(String[] args) throws IOException {
 
-        reader = new BufferedReader(new FileReader(new File(filelocation)));
+        Lexer lex = new Lexer("Let's look");
+        lex.reader = new BufferedReader(new FileReader(new File(lex.filelocation)));
+        int i= 0;
 
-        while (!end) {
-            System.out.print(NextSym());
+        while (!lex.end) {
+            System.out.print(lex.NextSym());
+            i++;
         }
 
-        reader.close();
-    }
-
-
-
-    static char NextSym() throws IOException {
-        int c= reader.read();  //int will become -1 when it'll reach the end of file
-        char ch = (char)c;
-
-//        if (ch == '\n')
-//        if (ch == '\t')
-
-        if (c == -1){ //check for the EOF and mark it
-            end = true;
-            ch = '@';
-        }
-
-        return ch;
+        lex.reader.close();
+//        System.out.print('\r');
+        System.out.println(i);
     }
 
 }
 
 
 class Lexer {
+    public String filelocation = "C:\\Users\\Nikita\\Dropbox\\git\\lexer\\files\\input.txt";
+    public BufferedReader reader = null;
+    public boolean end = false;  //to check for the end of file
+    public char ch;
+
     String str;
     public Lexer(String str) {this.str = str;}
+
+
+
+    char NextSym() throws IOException {
+
+        int c= reader.read();  //int will become -1 when it'll reach the end of file
+        ch = (char)c;
+
+//        if (ch == '\n')  //for future line and column count
+//        if (ch == '\t')
+//        if (ch == '\r')
+
+        if (c == -1){ //check for the EOF and mark it
+            end = true;
+            ch = '@';
+        }
+        SkipWhiteSpaces();
+        return ch;
+    }
+
+    void SkipWhiteSpaces() throws IOException { //called when ve have recognized a token
+        if (ch == '\r') NextSym();
+    }
 
     void getToken()//will return the Token
     {
