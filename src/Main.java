@@ -82,13 +82,27 @@ class Lexer{
                 NextSym();
             }
             type = "integer";
+
+            //real recognition
+
+            if (ch == '.') {
+                lexeme = lexeme + Character.toString(ch);
+                NextSym();
+                while (Character.isDigit(ch)) {
+                    lexeme = lexeme + Character.toString(ch);
+                    NextSym();
+                }
+            type = "real";
+            }
         }
+
 
 
         line = lineCounter;
         column = columnCounter;
         return new Token(line, column, type, lexeme);
     }
+
 
 }
 
@@ -125,8 +139,6 @@ class Keywords{
         "break",        "continue", "downto",   "exit",     "repeat",       "until",
         "case",         "with",     "const",    "set"
     };
-
-
 
 
 
