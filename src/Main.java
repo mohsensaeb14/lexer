@@ -74,7 +74,6 @@ class Lexer{
             }
 
 //        int recognition
-
     }
         if (Character.isDigit(ch)) {
             while (Character.isDigit(ch)){
@@ -95,6 +94,8 @@ class Lexer{
             type = "real";
             }
         }
+
+
 
 
 
@@ -125,12 +126,6 @@ class Token{
 }
 
 class Keywords{
-        //бращаемся к мэпу
-
-    //поиск по ключу,  в качестве ключей - ключевые слова
-    // и значеня для них 1
-    //нахождение значения в ассоциатиыном массиве.
-    // специальная функция, которая проверяет на соответствие ключа
 
     static String[] reserved = {
         "begin",        "forward",  "do",       "else",     "end",          "for",
@@ -141,6 +136,14 @@ class Keywords{
     };
 
 
+    static String[] operators = {
+        "and",      "div",      "mod",      "not",       "or",        "xor",      "+",        "-",
+        "*",        "/",        "^",        "+=",        "-=",        "*=",       "/=",       "<",
+        ">",        "<=",       ">=",       "=",        "<>",        ":=",        "@",        "."
+    };
 
+    static String[] separators = {
+        "(",        ")",        "[",        "]",        ";",        ",",        ":",        "..",
+    };
 
 }
