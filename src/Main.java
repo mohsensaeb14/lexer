@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.Arrays;
-import java.util.Map;
 
 public class Main {
 
@@ -14,12 +13,11 @@ public class Main {
         while (token1 != null) {
             token1.printToken();
             token1 = lex.getToken();
-//           System.out.println("sobaka(?)");
             i++;
         }
 
         lex.reader.close();
-        System.out.println(i);
+        System.out.println("Total: " + i);
 
     }
 }
@@ -31,11 +29,12 @@ class Lexer{
     public char ch;
     public int lineCounter= 1, columnCounter;
 
-    public Lexer(String file) throws FileNotFoundException {this.reader = new BufferedReader(new FileReader(new File(file)));}
+    public Lexer(String file) throws IOException {this.reader = new BufferedReader(new FileReader(new File(file)));
+    nextSym();}
 
 
 
-    char NextSym() throws IOException {
+    char nextSym() throws IOException {
         int c= reader.read();  //int will become -1 when it'll reach the end of file
         ch = (char)c;
 
@@ -51,57 +50,59 @@ class Lexer{
     }
 
     void SkipWhiteSpaces() throws IOException { //called when ve have recognized a token
-        while (ch == '\r' || ch == '\n' || ch == ' ' || ch == '\t') NextSym();
+        while (ch == '\r' || ch == '\n' || ch == ' ' || ch == '\t') nextSym();
     }
 
-    Token getToken() throws IOException//will return the exact Token
+    Token getToken() throws IOException//returns the exact Token
     {
-        NextSym();
-        SkipWhiteSpaces();
-        if (ch == '~'){System.out.println("No other Tokens"); return null; }
 
-        int line = 0, column = 0;
+        SkipWhiteSpaces();
+        if (ch == '~') return null;
+
         String type = "", lexeme = "";
 
-        if (Character.isLetter(ch)){
-            lexeme = lexeme + Character.toString(ch);
-            NextSym();
-           while  (Character.isDigit(ch) || Character.isLetter(ch)) { // write if there(?)
+        if (Arrays.asList(Keywords.separators).contains(Character.toString(ch))) {
+            type = "sep";
+            lexeme = Character.toString(ch);
+            nextSym();
+            return new Token(lineCounter, columnCounter, type, lexeme);
+
+        }
+
+        if (Character.isLetter(ch)) {
+
+            while (Character.isDigit(ch) || Character.isLetter(ch)) { // write if there(?)
                 lexeme = lexeme + Character.toString(ch);
-               type = "ident";
-               if (Arrays.asList(Keywords.reserved).contains(lexeme)) type = "keyword";
-                NextSym();
+                nextSym();
+                type = "ident";
+                if (Arrays.asList(Keywords.reserved).contains(lexeme)) type = "keyword"; //change it!
             }
+        return new Token (lineCounter, columnCounter, type, lexeme);
+        }
 
 //        int recognition
-    }
-        if (Character.isDigit(ch)) {
+        else if (Character.isDigit(ch)) {
             while (Character.isDigit(ch)){
                 lexeme = lexeme + Character.toString(ch);
-                NextSym();
+                nextSym();
             }
             type = "integer";
 
             //real recognition
-
             if (ch == '.') {
                 lexeme = lexeme + Character.toString(ch);
-                NextSym();
+                nextSym();
                 while (Character.isDigit(ch)) {
                     lexeme = lexeme + Character.toString(ch);
-                    NextSym();
+                    nextSym();
                 }
             type = "real";
             }
         }
 
 
+        return new Token(lineCounter, columnCounter, type, lexeme);
 
-
-
-        line = lineCounter;
-        column = columnCounter;
-        return new Token(line, column, type, lexeme);
     }
 
 
@@ -112,7 +113,7 @@ class Token{
 
 
     int line, column;
-    String type, lexeme, value;
+    String type, lexeme;
     public Token(int line, int column, String type, String lexeme){
         this.line = line;
         this.column = column;
