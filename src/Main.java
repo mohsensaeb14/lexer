@@ -61,12 +61,10 @@ class Lexer{
 
         SkipWhiteSpaces();
         if (ch == '~') return null;
-
         String type = "", lexeme = "";
 
 
         if (Character.isLetter(ch)) {
-
             while (Character.isDigit(ch) || Character.isLetter(ch)) { // write if there(?)
                 lexeme = lexeme + Character.toString(ch);
                 nextSym();
@@ -74,7 +72,6 @@ class Lexer{
                 if (Arrays.asList(Keywords.reserved).contains(lexeme)) type = "keyword";
                 else if ((Arrays.asList(Keywords.operators).contains(lexeme))) type = "op";  //for first 6 operators recognition
             }
-        return new Token (lineCounter, columnCounter, type, lexeme);
         }
 
 //        int recognition
@@ -87,16 +84,39 @@ class Lexer{
 
             //real recognition
             if (ch == '.') {
+                type = "real";
                 lexeme = lexeme + Character.toString(ch);
                 nextSym();
-                while (Character.isDigit(ch)) {
-                    lexeme = lexeme + Character.toString(ch);
+                if (!Character.isDigit(ch) && !(ch == '.')) System.out.println("NoFrac"); //throw exception here
+//                    if (ch == '.') {       // {num}.. case
+//                        type = "sep";       //need to return [int {num}] and [sep {..}] separately
+//                        lexeme += Character.toString(ch);
+//                        nextSym();
+//                        return new Token(lineCounter, columnCounter, type, lexeme);
+//                    }
+
+                    while (Character.isDigit(ch)) {
+                        lexeme = lexeme + Character.toString(ch);
+                        nextSym();
+                    }
+
+                if (ch == 'e' || ch == 'E')  {
+                    lexeme += Character.toString(ch);
                     nextSym();
+                    if (ch == '+' || ch == '-') {
+                        lexeme += Character.toString(ch);
+                        nextSym();
+                        if (!Character.isDigit(ch)) System.out.println("NoExp"); //exception here
+                        while (Character.isDigit(ch)) {
+                            lexeme = lexeme + Character.toString(ch);
+                            nextSym();
+                        }
+                    }
                 }
-            type = "real";
             }
-            return new Token(lineCounter, columnCounter, type, lexeme);
         }
+
+
         //op and sep recognition\
         else if ((Arrays.asList(Keywords.sep_op).contains(Character.toString(ch)))) {
             lexeme = lexeme + Character.toString(ch);
@@ -108,10 +128,7 @@ class Lexer{
 
             if ((Arrays.asList(Keywords.operators).contains(lexeme))) type = "op";
             else type = "sep";
-
-        return new Token(lineCounter, columnCounter, type, lexeme);
         }
-
 
         return new Token(lineCounter, columnCounter, type, lexeme); //shouldn't be there throw exception
 
