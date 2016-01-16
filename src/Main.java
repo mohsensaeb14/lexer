@@ -19,6 +19,9 @@ public class Main {
         lex.reader.close();
         System.out.println("Total: " + i);
 
+
+//        char [] chars = str.toCharArray();
+        System.out.print(Keywords.reserved[1]);
     }
 }
 
@@ -75,7 +78,8 @@ class Lexer{
                 lexeme = lexeme + Character.toString(ch);
                 nextSym();
                 type = "ident";
-                if (Arrays.asList(Keywords.reserved).contains(lexeme)) type = "keyword"; //change it!
+                if (Arrays.asList(Keywords.reserved).contains(lexeme)) type = "keyword";
+                else if ((Arrays.asList(Keywords.operators).contains(lexeme))) type = "op";  //for first 6 operators recognition
             }
         return new Token (lineCounter, columnCounter, type, lexeme);
         }
@@ -98,10 +102,23 @@ class Lexer{
                 }
             type = "real";
             }
+            return new Token(lineCounter, columnCounter, type, lexeme);
+        }
+        //operators recognition
+        else if ((Arrays.asList(Keywords.operators).contains(Character.toString(ch)))) {
+            lexeme = lexeme + Character.toString(ch);
+            nextSym();
+            type = "op";
+            if ((Arrays.asList(Keywords.operators).contains(lexeme))){
+                lexeme = lexeme + Character.toString(ch);
+                nextSym();
+            }
+        return new Token(lineCounter, columnCounter, type, lexeme);
         }
 
 
-        return new Token(lineCounter, columnCounter, type, lexeme);
+
+        return new Token(lineCounter, columnCounter, type, lexeme); //shouldn't be there throw exception
 
     }
 
