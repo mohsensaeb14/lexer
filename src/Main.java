@@ -97,24 +97,20 @@ class Lexer{
             }
             return new Token(lineCounter, columnCounter, type, lexeme);
         }
-        //op and sep recognition
-        else if ((Arrays.asList(Keywords.operators).contains(Character.toString(ch))) || Arrays.asList(Keywords.separators).contains(Character.toString(ch))) {
+        //op and sep recognition\
+        else if ((Arrays.asList(Keywords.sep_op).contains(Character.toString(ch)))) {
             lexeme = lexeme + Character.toString(ch);
             nextSym();
-            lexeme = lexeme + Character.toString(ch);
-            type = "op";
-
-            if ((Arrays.asList(Keywords.operators).contains(lexeme))){
+            while ((Arrays.asList(Keywords.sep_op).contains(lexeme + ch))) {
+                lexeme = lexeme + Character.toString(ch);
                 nextSym();
             }
 
-            if (Arrays.asList(Keywords.separators).contains(lexeme)) {
-                type = "sep";
-                return new Token(lineCounter, columnCounter, type, Character.toString(ch)); //without .. case
-            }
-            return new Token(lineCounter, columnCounter, type, lexeme);
-        }
+            if ((Arrays.asList(Keywords.operators).contains(lexeme))) type = "op";
+            else type = "sep";
 
+        return new Token(lineCounter, columnCounter, type, lexeme);
+        }
 
 
         return new Token(lineCounter, columnCounter, type, lexeme); //shouldn't be there throw exception
@@ -159,8 +155,11 @@ class Keywords{
         ">",        "<=",       ">=",       "=",        "<>",        ":=",        "@",        "."
     };
 
-    static String[] separators = {
+    static String[] sep_op = {
         "(",        ")",        "[",        "]",        ";",        ",",        ":",        "..",
+        "and",      "div",      "mod",      "not",       "or",        "xor",      "+",        "-",
+        "*",        "/",        "^",        "+=",        "-=",        "*=",       "/=",       "<",
+        ">",        "<=",       ">=",       "=",        "<>",        ":=",        "@",        "."
     };
 
 }
