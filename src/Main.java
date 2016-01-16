@@ -64,13 +64,6 @@ class Lexer{
 
         String type = "", lexeme = "";
 
-        if (Arrays.asList(Keywords.separators).contains(Character.toString(ch))) {
-            type = "sep";
-            lexeme = Character.toString(ch);
-            nextSym();
-            return new Token(lineCounter, columnCounter, type, lexeme);
-
-        }
 
         if (Character.isLetter(ch)) {
 
@@ -104,16 +97,22 @@ class Lexer{
             }
             return new Token(lineCounter, columnCounter, type, lexeme);
         }
-        //operators recognition
-        else if ((Arrays.asList(Keywords.operators).contains(Character.toString(ch)))) {
+        //op and sep recognition
+        else if ((Arrays.asList(Keywords.operators).contains(Character.toString(ch))) || Arrays.asList(Keywords.separators).contains(Character.toString(ch))) {
             lexeme = lexeme + Character.toString(ch);
             nextSym();
+            lexeme = lexeme + Character.toString(ch);
             type = "op";
+
             if ((Arrays.asList(Keywords.operators).contains(lexeme))){
-                lexeme = lexeme + Character.toString(ch);
                 nextSym();
             }
-        return new Token(lineCounter, columnCounter, type, lexeme);
+
+            if (Arrays.asList(Keywords.separators).contains(lexeme)) {
+                type = "sep";
+                return new Token(lineCounter, columnCounter, type, Character.toString(ch)); //without .. case
+            }
+            return new Token(lineCounter, columnCounter, type, lexeme);
         }
 
 
