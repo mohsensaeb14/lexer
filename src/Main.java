@@ -16,12 +16,10 @@ public class Main {
             i++;
         }
 
-        lex.reader.close();
-        System.out.println("Total: " + i);
+//        lex.reader.close();
+//        System.out.println("Total: " + i);
 
 
-//        char [] chars = str.toCharArray();
-        System.out.print(Keywords.reserved[1]);
     }
 }
 
@@ -62,6 +60,9 @@ class Lexer{
         SkipWhiteSpaces();
         if (ch == '~') return null;
         String type = "", lexeme = "";
+
+        int line = lineCounter;
+        int column = columnCounter;
 
 
         if (Character.isLetter(ch)) {
@@ -130,7 +131,7 @@ class Lexer{
             else type = "sep";
         }
 
-        return new Token(lineCounter, columnCounter, type, lexeme); //shouldn't be there throw exception
+        return new Token(line, column, type, lexeme); //shouldn't be there throw exception
 
     }
 
